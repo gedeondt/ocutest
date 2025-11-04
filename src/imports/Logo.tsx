@@ -1,5 +1,4 @@
 import svgPaths from "./svg-pljxe175h2";
-import imgIlangaCapitalLogo1 from "figma:asset/36eb8c56f273923ce8251d53a0eb77041552a66a.png";
 
 function Group() {
   return (
@@ -69,7 +68,7 @@ export default function Logo() {
       <Group1 />
       <div className="h-[42.686px] relative shrink-0 w-[50.884px]" data-name="ilanga-capital-logo 1">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <img alt="" className="absolute h-[136.75%] left-[-7.36%] max-w-none top-[-12.42%] w-[114.72%]" src={imgIlangaCapitalLogo1} />
+          <div className="absolute h-[136.75%] left-[-7.36%] max-w-none top-[-12.42%] w-[114.72%] bg-gray-200 flex items-center justify-center text-xs text-gray-400">Logo</div>
         </div>
       </div>
     </div>
