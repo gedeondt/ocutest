@@ -1,95 +1,79 @@
 # OCU Dashboard de Análisis de Datos
 
 ## Overview
-This is a React-based dashboard application for OCU (Organización de Consumidores y Usuarios) that provides comprehensive data analysis and visualization. The dashboard displays demand sources, supply sources, coverage maps, and action plans for content analysis.
-
-## Project Architecture
-- **Framework**: React 18.3.1 with TypeScript
-- **Build Tool**: Vite 6.3.5
-- **Styling**: Tailwind CSS v4.1 (pre-compiled)
-- **UI Components**: Radix UI primitives + shadcn/ui components
-- **Charts**: Recharts for data visualization
-- **Language Support**: Multi-language support via LanguageContext (Spanish/English)
-
-## Key Features
-- Google Trends analysis
-- Keyword Planner integration
-- Growth topics tracking
-- Competitive radar analysis
-- TikTok viral radar
-- Early alerts system
-- Content gap analysis
-- Market pulse visualization
-- Coverage mapping
-- Action plan management
+This is a data analysis dashboard application built with React, TypeScript, and Vite. The project was originally designed in Figma and imported to Replit. It displays various analytics components including demand sources, supply sources, coverage maps, and action plans.
 
 ## Project Structure
-```
-/
-├── src/
-│   ├── components/        # React components
-│   │   ├── ui/           # shadcn/ui components
-│   │   ├── figma/        # Figma-related components
-│   │   └── ...           # Dashboard components
-│   ├── contexts/         # React contexts (Language)
-│   ├── imports/          # Generated/imported components
-│   ├── styles/           # Global CSS and Tailwind config
-│   ├── App.tsx           # Main app component
-│   └── main.tsx          # Entry point
-├── index.html
-├── vite.config.ts        # Vite configuration
-├── tsconfig.json         # TypeScript configuration
-└── package.json
-```
+- **Frontend**: React 18.3.1 with TypeScript
+- **Build Tool**: Vite 6.3.5
+- **UI Components**: Radix UI components library
+- **Styling**: Tailwind CSS v4 (pre-compiled in src/index.css)
+- **Charts**: Recharts library for data visualization
+- **Language Support**: Multi-language support via LanguageContext
 
-## Development
+## Recent Changes (November 4, 2025)
+1. **Initial Setup**:
+   - Created TypeScript configuration files (tsconfig.json, tsconfig.node.json)
+   - Installed all npm dependencies
+   - Created .gitignore file for Node.js projects
 
-### Running the Project
-The development server runs on port 5000:
+2. **Vite Configuration**:
+   - Updated server to bind to `0.0.0.0:5000` (required for Replit)
+   - Added `allowedHosts: true` to allow Replit's proxy access
+   - Configured HMR with `clientPort: 443` for WebSocket connections
+   - Removed `open: true` flag (not needed in cloud environment)
+
+3. **Fixed Import Issues**:
+   - Replaced Figma asset import in Logo.tsx with a placeholder div
+   - The original image import used a Figma-specific URL that doesn't work in standard Vite
+
+4. **Deployment Configuration**:
+   - Configured for autoscale deployment (stateless web application)
+
+## Key Files
+- `vite.config.ts`: Vite configuration with Replit-specific settings
+- `src/App.tsx`: Main application component with dashboard layout
+- `src/contexts/LanguageContext.tsx`: Multi-language support
+- `src/components/`: UI components for various dashboard sections
+- `src/index.css`: Pre-compiled Tailwind CSS v4 styles
+- `src/styles/globals.css`: Custom CSS variables and theme configuration
+
+## Running Locally
+The project runs automatically via the configured workflow:
 ```bash
 npm run dev
 ```
+This starts the Vite development server on port 5000.
 
-Access the app at the webview URL provided by Replit.
-
-### Building for Production
+## Building for Production
 ```bash
 npm run build
 ```
-Outputs to `/build` directory.
+Output directory: `build/`
 
-## Configuration
+## Important Notes
+- The project uses Tailwind CSS v4, which is already compiled in `src/index.css`
+- Custom color schemes and design tokens are defined in `src/styles/globals.css`
+- The `allowedHosts: true` setting in Vite config is critical for Replit deployment
+- Logo component has a placeholder image (original Figma asset removed)
 
-### Vite Configuration
-- **Host**: 0.0.0.0 (required for Replit)
-- **Port**: 5000 (required for Replit webview)
-- **HMR**: Configured with clientPort 443 for Replit proxy
-- **Build Output**: `build/` directory
-
-### Deployment
-Configured for autoscale deployment on Replit. The app is stateless and suitable for serverless deployment.
-
-## Recent Changes
-- November 4, 2025: Initial setup for Replit environment
-  - Configured Vite for Replit (port 5000, host 0.0.0.0)
-  - Created TypeScript configurations
-  - Installed all dependencies
-  - Fixed Figma asset import issue in Logo component
-  - Set up development workflow
-  - Configured deployment for autoscale
+## Project Architecture
+The dashboard is organized into several main sections:
+1. **Fuentes de Demanda** (Demand Sources): Analysis of consumer search information
+2. **Fuentes de Oferta** (Supply Sources): Supply-side data analysis
+3. **Mapa de Cobertura** (Coverage Map): Geographic coverage visualization
+4. **Plan de Acción** (Action Plan): Strategic action planning interface
 
 ## Dependencies
-All major dependencies are from the Radix UI ecosystem and React ecosystem:
-- UI Primitives: @radix-ui/* components
-- Charts: recharts
-- Form handling: react-hook-form
-- Date picker: react-day-picker
-- Styling utilities: tailwind-merge, class-variance-authority
-- Icons: lucide-react
-- Theming: next-themes
+Main production dependencies:
+- React & React DOM (18.3.1)
+- Radix UI component library (various packages)
+- Recharts (2.15.2) for charts
+- Lucide React for icons
+- React Hook Form (7.55.0)
+- Next Themes (0.4.6) for theme management
 
-## Notes
-- The project uses Tailwind CSS v4 with pre-compiled styles in `src/index.css`
-- Custom theme variables are defined in `src/styles/globals.css`
-- The logo component had a Figma asset import that was replaced with a placeholder
-- Multi-language support is implemented via React Context
+Development dependencies:
+- Vite (6.3.5)
+- TypeScript
+- @vitejs/plugin-react-swc for fast React refresh
