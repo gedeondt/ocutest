@@ -22,12 +22,23 @@ This is a data analysis dashboard application built with React, TypeScript, and 
    - Added `allowedHosts: true` to allow Replit's proxy access
    - Configured HMR with `clientPort: 443` for WebSocket connections
    - Removed `open: true` flag (not needed in cloud environment)
+   - **Added Vite proxy**: Configured `/api` routes to proxy to backend on port 3000
 
 3. **Fixed Import Issues**:
    - Replaced Figma asset import in Logo.tsx with a placeholder div
    - The original image import used a Figma-specific URL that doesn't work in standard Vite
 
-4. **Deployment Configuration**:
+4. **Backend Implementation** (NEW):
+   - Created Express + TypeScript backend in `server/` directory
+   - Implemented REST API endpoints:
+     - `/api/trends/google-trends` - Google Trends data
+     - `/api/trends/keyword-planner` - Keyword Planner data
+     - `/api/tematicas` - Trending topics data
+   - Backend runs on port 3000 with CORS enabled
+   - Data uses camelCase keys (cancelSubscription, claimInsurance, productReturn)
+   - Services layer in frontend (`src/services/`) for API consumption
+   
+5. **Deployment Configuration**:
    - Configured for autoscale deployment (stateless web application)
 
 ## Key Files
@@ -39,17 +50,32 @@ This is a data analysis dashboard application built with React, TypeScript, and 
 - `src/styles/globals.css`: Custom CSS variables and theme configuration
 
 ## Running Locally
-The project runs automatically via the configured workflow:
+
+### Development Mode
+The project has two workflows that run automatically:
+
+1. **Frontend (dev)**: Vite development server on port 5000
 ```bash
 npm run dev
 ```
-This starts the Vite development server on port 5000.
 
-## Building for Production
+2. **Backend (backend)**: Express API server on port 3000
+```bash
+npm run server
+```
+
+The frontend proxies `/api` requests to the backend automatically via Vite proxy configuration.
+
+### Building for Production
 ```bash
 npm run build
 ```
 Output directory: `build/`
+
+Backend production mode:
+```bash
+npm run server:prod
+```
 
 ## Important Notes
 - The project uses Tailwind CSS v4, which is already compiled in `src/index.css`

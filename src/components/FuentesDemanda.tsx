@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
@@ -24,16 +24,18 @@ import {
 } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { trendsService } from "../services/trendsService";
+import { tematicasService } from "../services/tematicasService";
 
-// Google Trends Data
-const getTrendsData = (t: (key: string) => string) => [
-  { fecha: '01/01', [t('trends.cancelSubscription')]: 100, [t('trends.claimInsurance')]: 65, [t('trends.productReturn')]: 80 },
-  { fecha: '02/01', [t('trends.cancelSubscription')]: 120, [t('trends.claimInsurance')]: 75, [t('trends.productReturn')]: 85 },
-  { fecha: '03/01', [t('trends.cancelSubscription')]: 85, [t('trends.claimInsurance')]: 70, [t('trends.productReturn')]: 90 },
-  { fecha: '04/01', [t('trends.cancelSubscription')]: 150, [t('trends.claimInsurance')]: 85, [t('trends.productReturn')]: 95 },
-  { fecha: '05/01', [t('trends.cancelSubscription')]: 180, [t('trends.claimInsurance')]: 95, [t('trends.productReturn')]: 110 },
-  { fecha: '06/01', [t('trends.cancelSubscription')]: 165, [t('trends.claimInsurance')]: 88, [t('trends.productReturn')]: 105 },
-  { fecha: '07/01', [t('trends.cancelSubscription')]: 200, [t('trends.claimInsurance')]: 105, [t('trends.productReturn')]: 120 }
+// Google Trends Data - Using camelCase keys matching backend
+const getTrendsData = () => [
+  { fecha: '01/01', cancelSubscription: 100, claimInsurance: 65, productReturn: 80 },
+  { fecha: '02/01', cancelSubscription: 120, claimInsurance: 75, productReturn: 85 },
+  { fecha: '03/01', cancelSubscription: 85, claimInsurance: 70, productReturn: 90 },
+  { fecha: '04/01', cancelSubscription: 150, claimInsurance: 85, productReturn: 95 },
+  { fecha: '05/01', cancelSubscription: 180, claimInsurance: 95, productReturn: 110 },
+  { fecha: '06/01', cancelSubscription: 165, claimInsurance: 88, productReturn: 105 },
+  { fecha: '07/01', cancelSubscription: 200, claimInsurance: 105, productReturn: 120 }
 ];
 
 // Redes Sociales - Meta
@@ -273,14 +275,42 @@ const DemandCard = ({
 );
 
 export const FuentesDemanda = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [isHighPriorityExpanded, setIsHighPriorityExpanded] = useState(false);
   const [isEmergingTrendsExpanded, setIsEmergingTrendsExpanded] = useState(false);
   const [selectedTheme, setSelectedTheme] = useState<string>('beauty');
   
-  // Get translated data
-  const trendsData = getTrendsData(t);
-  const tematicasData = getTematicasData(t);
+  // API data states
+  const [trendsData, setTrendsData] = useState<any[]>(getTrendsData());
+  const [keywordPlannerData, setKeywordPlannerData] = useState<any[]>(getTrendsData());
+  const [tematicasData, setTematicasData] = useState<any[]>(getTematicasData(t));
+  const [isLoading, setIsLoading] = useState(true);
+  
+  // Load data from API
+  useEffect(() => {
+    const loadData = async () => {
+      setIsLoading(true);
+      try {
+        const [googleTrendsData, keywordData, tematicasDataFromApi] = await Promise.all([
+          trendsService.getGoogleTrends(language),
+          trendsService.getKeywordPlanner(language),
+          tematicasService.getTematicas(language)
+        ]);
+        
+        if (googleTrendsData.length > 0) setTrendsData(googleTrendsData);
+        if (keywordData.length > 0) setKeywordPlannerData(keywordData);
+        if (tematicasDataFromApi.length > 0) setTematicasData(tematicasDataFromApi);
+      } catch (error) {
+        console.error('Error loading data from API:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    loadData();
+  }, [language]);
+  
+  // Get other translated data (not yet connected to API)
   const metaData = getMetaData(t);
   const tiktokData = getTikTokData(t);
   const xData = getXData(t);
@@ -310,9 +340,9 @@ export const FuentesDemanda = () => {
                 <XAxis dataKey="fecha" className="text-xs" />
                 <YAxis className="text-xs" />
                 <Tooltip />
-                <Area type="monotone" dataKey="cancelar suscripción" stackId="1" stroke="#016689" fill="#016689" fillOpacity={0.6} />
-                <Area type="monotone" dataKey="reclamar seguro" stackId="1" stroke="#0B4C63" fill="#0B4C63" fillOpacity={0.6} />
-                <Area type="monotone" dataKey="devolución producto" stackId="1" stroke="#AEE2FB" fill="#AEE2FB" fillOpacity={0.6} />
+                <Area type="monotone" dataKey="cancelSubscription" stackId="1" stroke="#016689" fill="#016689" fillOpacity={0.6} name={t('trends.cancelSubscription')} />
+                <Area type="monotone" dataKey="claimInsurance" stackId="1" stroke="#0B4C63" fill="#0B4C63" fillOpacity={0.6} name={t('trends.claimInsurance')} />
+                <Area type="monotone" dataKey="productReturn" stackId="1" stroke="#AEE2FB" fill="#AEE2FB" fillOpacity={0.6} name={t('trends.productReturn')} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -328,14 +358,14 @@ export const FuentesDemanda = () => {
         >
           <div className="h-48">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={trendsData}>
+              <AreaChart data={keywordPlannerData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="fecha" className="text-xs" />
                 <YAxis className="text-xs" />
                 <Tooltip />
-                <Area type="monotone" dataKey="cancelar suscripción" stackId="1" stroke="#016689" fill="#016689" fillOpacity={0.6} />
-                <Area type="monotone" dataKey="reclamar seguro" stackId="1" stroke="#0B4C63" fill="#0B4C63" fillOpacity={0.6} />
-                <Area type="monotone" dataKey="devoluci��n producto" stackId="1" stroke="#AEE2FB" fill="#AEE2FB" fillOpacity={0.6} />
+                <Area type="monotone" dataKey="cancelSubscription" name={t('trends.cancelSubscription')} stackId="1" stroke="#016689" fill="#016689" fillOpacity={0.6} />
+                <Area type="monotone" dataKey="claimInsurance" name={t('trends.claimInsurance')} stackId="1" stroke="#0B4C63" fill="#0B4C63" fillOpacity={0.6} />
+                <Area type="monotone" dataKey="productReturn" name={t('trends.productReturn')} stackId="1" stroke="#AEE2FB" fill="#AEE2FB" fillOpacity={0.6} />
               </AreaChart>
             </ResponsiveContainer>
           </div>

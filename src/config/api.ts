@@ -1,14 +1,25 @@
+// In development, use Vite proxy (empty string for relative URLs)
+// In production, use environment variable or construct with port 3000
 const getApiBaseUrl = (): string => {
-  if (typeof window !== 'undefined') {
-    const currentHost = window.location.hostname;
-    const isReplit = currentHost.includes('replit.dev') || currentHost.includes('repl.co');
-    
-    if (isReplit) {
-      return `https://${currentHost}`.replace(':5000', ':3000');
-    }
+  // Check if we're in development mode
+  if (import.meta.env.DEV) {
+    return ''; // Use Vite proxy in development
   }
   
-  return 'http://localhost:3000';
+  // In production, allow env override or use port 3000
+  const envBackendUrl = import.meta.env.VITE_BACKEND_URL;
+  if (envBackendUrl) {
+    return envBackendUrl;
+  }
+  
+  // Default production: backend on same host, port 3000
+  if (typeof window !== 'undefined') {
+    const protocol = window.location.protocol;
+    const hostname = window.location.hostname;
+    return `${protocol}//${hostname}:3000`;
+  }
+  
+  return '';
 };
 
 export const API_BASE_URL = getApiBaseUrl();
