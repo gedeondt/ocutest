@@ -83,6 +83,14 @@ npm run server:prod
 - The `allowedHosts: true` setting in Vite config is critical for Replit deployment
 - Logo component has a placeholder image (original Figma asset removed)
 
+## Backend API Configuration
+The frontend automatically connects to the backend using smart configuration:
+- **Development**: Uses Vite proxy (empty string) to forward `/api/*` to `localhost:3000`
+- **Production**: Uses `${protocol}//${hostname}:3000` by default
+- **Custom Backend URL**: Set `VITE_BACKEND_URL` environment variable to override
+
+Example: `VITE_BACKEND_URL=https://api.example.com npm run build`
+
 ## Project Architecture
 The dashboard is organized into several main sections:
 1. **Fuentes de Demanda** (Demand Sources): Analysis of consumer search information
